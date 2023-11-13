@@ -1,0 +1,37 @@
+server:
+  port: 8060
+
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      routes:
+        - id: products
+          uri: lb://products
+          predicates:
+            - Path=/api/v1/products/**
+          filters:
+            - AuthFilter
+        - id: orders
+          uri: lb://orders
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            - AuthFilter
+        - id: security-service
+          uri: lb://security-service
+          predicates:
+            - Path=/api/v1/security/**
+
