@@ -1,0 +1,180 @@
+version: "3.8"
+
+services:
+
+  config-service:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    networks:
+      - backend
+  #    restart: always
+
+
+  discovery-service:
+    build:
+      context: ./discovery
+      dockerfile: Dockerfile
+    container_name: discovery-service
+    depends_on:
+      - config-service
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+  #    restart: always
+
+  gateway-service:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    ports:
+      - "8060:8060"
+    depends_on:
+      - discovery-service
+      - config-service
+    networks:
+      - backend
+  #    restart: always
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "8092:8092"
+    restart: always
+    networks:
+      - backend
+      - postgres-orders
+    depends_on:
+      - discovery-service
+      - config-service
+      - order-db
+
+    environment:
+      - SPRING_DATASOURCE_USERNAME=service1
+      - SPRING_DATASOURCE_PASSWORD=admin1
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://order-db:5432/order
+
+
+  security-service:
+    build:
+      context: ./security-service
+      dockerfile: Dockerfile
+    container_name: security-service
+    ports:
+      - "8091:8091"
+    networks:
+      - backend
+      - postgres-users
+    depends_on:
+      - discovery-service
+      - config-service
+      - user-db
+    environment:
+      - SPRING_DATASOURCE_USERNAME=service1
+      - SPRING_DATASOURCE_PASSWORD=admin1
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/user
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    ports:
+      - "8090:8090"
+    networks:
+      - backend
+      - postgres-products
+    depends_on:
+      - discovery-service
+      - config-service
+      - product-db
+    environment:
+      - SPRING_DATASOURCE_USERNAME=service1
+      - SPRING_DATASOURCE_PASSWORD=admin1
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://product-db:5432/product
+
+  order-db:
+    image: postgres
+    container_name: order-db
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=order
+      - POSTGRES_USER=service1
+      - POSTGRES_PASSWORD=admin1
+    healthcheck:
+      test: ["CMD", "pg_isready -U service1"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    networks:
+      - postgres-orders
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  user-db:
+    image: postgres
+    container_name: user-db
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=user
+      - POSTGRES_USER=service1
+      - POSTGRES_PASSWORD=admin1
+    healthcheck:
+      test: ["CMD", "pg_isready -U service1"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    networks:
+      - postgres-users
+    volumes:
+      - pgdata2:/var/lib/postgresql/data
+
+  product-db:
+    image: postgres
+    container_name: product-db
+    restart: always
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_DB=product
+      - POSTGRES_USER=service1
+      - POSTGRES_PASSWORD=admin1
+    healthcheck:
+      test: ["CMD", "pg_isready -U service1"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    networks:
+      - postgres-products
+    volumes:
+      - pgdata3:/var/lib/postgresql/data
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8075:8080
+
+volumes:
+  pgdata:
+  pgdata2:
+  pgdata3:
+
+networks:
+  backend:
+  postgres-orders:
+  postgres-users:
+  postgres-products:
