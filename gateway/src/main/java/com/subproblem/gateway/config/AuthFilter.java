@@ -47,7 +47,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             return webClient.build()
                     .post()
-                    .uri("lb://security-service/api/v1/security/validate?token=" + jwtToken.substring(7))
+                    .uri("lb://SECURITY-SERVICE/api/v1/security/validate?token=" + jwtToken.substring(7))
                     .retrieve()
                     .bodyToMono(UserResponseDto.class)
                     .map(dto -> {
