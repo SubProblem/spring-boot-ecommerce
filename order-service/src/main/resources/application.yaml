@@ -1,9 +1,9 @@
 eureka:
   instance:
     prefer-ip-address: true
-    client:
-      service-url:
-        defaultZone: http://localhost:8761/eureka
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
 
 server:
   port: 8092
@@ -13,16 +13,16 @@ spring:
     discovery:
       enabled: true
   application:
-    name: orders
+    name: orders-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://config-service:8888
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/microservice-demo
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: admin
   jpa:
     hibernate:
       ddl-auto: update

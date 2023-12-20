@@ -46,7 +46,7 @@ public class OrdersService {
 
         List<Product> products = webClient.build()
                 .get()
-                .uri("lb://products/api/v1/products")
+                .uri("lb://PRODUCTS-SERVICE/api/v1/products")
                 .retrieve()
                 .bodyToFlux(Product.class)
                 .collectList().block();
