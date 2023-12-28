@@ -1,9 +1,9 @@
 eureka:
   instance:
-    prefer-ip-address: true
+    preferIpAddress: false
   client:
     service-url:
-      defaultZone: http://discovery-service:8761/eureka
+      defaultZone: http://discovery-service:8761/eureka/
 
 server:
   port: 8091
