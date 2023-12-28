@@ -24,6 +24,17 @@ The Order Service is dedicated to storing information about user purchases. It m
 - **Spring Data JPA**: Used for easy and consistent data access.
 - **PostgreSQL**: Chosen as the relational database to store application data.
 - **JWT Authentication**: Implemented for secure and stateless user authentication.
+- **Apache Kafka**: Employed for asynchronous communication between microservices. Kafka facilitates real-time messaging and data streaming, enhancing inter-service communication and enabling efficient data exchange.
+
+
+## Kafka Integration
+
+Kafka is employed for asynchronous communication between microservices. The implementation involves:
+
+- **Producer in Order Service**: Sends messages containing product ID and quantity to the Product Service.
+- **Consumer in Product Service**: Receives messages to update product quantities based on incoming data.
+
+
 
 ## Additional Services
 
