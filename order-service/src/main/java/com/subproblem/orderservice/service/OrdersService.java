@@ -4,6 +4,8 @@ import com.subproblem.orderservice.dto.OrderRequest;
 import com.subproblem.orderservice.dto.OrderResponse;
 import com.subproblem.orderservice.dto.Product;
 import com.subproblem.orderservice.entity.Order;
+import com.subproblem.orderservice.producer.Producer;
+import com.subproblem.orderservice.producer.ProductMessage;
 import com.subproblem.orderservice.repository.OrderRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class OrdersService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClient;
+    private final Producer producer;
+
 
     public ResponseEntity<?> makeOrder(OrderRequest request, HttpServletRequest http) {
 
@@ -34,6 +38,11 @@ public class OrdersService {
                 .build();
 
         orderRepository.save(order);
+
+        // Send product id and quantity to order-service and update total amount of product by Id
+
+        var productMessage = new ProductMessage(order.getQuantity(), order.getProductId());
+        producer.sendProductMessage(productMessage);
 
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
