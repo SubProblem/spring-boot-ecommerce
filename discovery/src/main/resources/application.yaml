@@ -1,11 +1,12 @@
 eureka:
   instance:
+#    preferIpAddress: true
     hostname: localhost
   client:
     register-with-eureka: false
     fetch-registry: false
-    service-url:
-      defaultZone: http://discovery-service:8761/eureka/
+#    service-url:
+#      defaultZone: http://discovery-service:8761/eureka
 
 
 server:
