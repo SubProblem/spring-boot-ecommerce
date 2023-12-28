@@ -1,6 +1,6 @@
 eureka:
   instance:
-    prefer-ip-address: true
+    preferIpAddress: false
   client:
     service-url:
       defaultZone: http://discovery-service:8761/eureka/
@@ -33,3 +33,8 @@ spring:
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  kafka:
+    producer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAPSERVERS}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

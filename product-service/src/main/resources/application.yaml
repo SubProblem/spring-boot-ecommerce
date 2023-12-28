@@ -1,6 +1,6 @@
 eureka:
   instance:
-    prefer-ip-address: true
+    preferIpAddress: false
   client:
     service-url:
       defaultZone: http://discovery-service:8761/eureka/
@@ -32,3 +32,16 @@ spring:
       format_sql: true
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    consumer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAPSERVERS}
+      group-id: orderGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: com.subproblem.orderservice.producer.ProductMessage:com.subproblem.productservice.consumer.ProductMessage
