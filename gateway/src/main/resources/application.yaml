@@ -3,7 +3,7 @@ server:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    preferIpAddress: false
   client:
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka/
@@ -16,13 +16,13 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: products
+        - id: products-service
           uri: lb://products-service
           predicates:
             - Path=/api/v1/products/**
           filters:
             - AuthFilter
-        - id: orders
+        - id: orders-service
           uri: lb://orders-service
           predicates:
             - Path=/api/v1/orders/**
