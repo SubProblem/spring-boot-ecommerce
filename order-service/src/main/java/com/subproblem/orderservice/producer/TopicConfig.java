@@ -14,4 +14,11 @@ public class TopicConfig {
                 .name("productTopic")
                 .build();
     }
+
+    @Bean
+    public NewTopic notificationTopic() {
+        return TopicBuilder
+                .name("notificationTopic")
+                .build();
+    }
 }

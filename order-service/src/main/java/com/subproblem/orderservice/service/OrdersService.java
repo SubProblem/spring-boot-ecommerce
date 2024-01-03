@@ -4,6 +4,7 @@ import com.subproblem.orderservice.dto.OrderRequest;
 import com.subproblem.orderservice.dto.OrderResponse;
 import com.subproblem.orderservice.dto.Product;
 import com.subproblem.orderservice.entity.Order;
+import com.subproblem.orderservice.producer.NotificationMessage;
 import com.subproblem.orderservice.producer.Producer;
 import com.subproblem.orderservice.producer.ProductMessage;
 import com.subproblem.orderservice.repository.OrderRepository;
@@ -43,6 +44,15 @@ public class OrdersService {
 
         var productMessage = new ProductMessage(order.getQuantity(), order.getProductId());
         producer.sendProductMessage(productMessage);
+
+        // Send customers email and purchased product to notification-service
+
+        var notificationMessage = NotificationMessage.builder()
+                .email(http.getHeader("user-email"))
+                .dateOfOrder(order.getDateOfOrder())
+                .build();
+
+        producer.sendNotificationMessage(notificationMessage);
 
         return ResponseEntity.ok(HttpStatus.CREATED);
     }

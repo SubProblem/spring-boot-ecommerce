@@ -10,12 +10,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class Producer {
 
-    private final KafkaTemplate<String, ProductMessage> kafkaTemplate;
-
+    private final KafkaTemplate<String, ProductMessage> kafkaProductTemplate;
+    private final KafkaTemplate<String, NotificationMessage> kafkaNotificationTemplate;
 
     public void sendProductMessage(ProductMessage message) {
-        log.info("Hellooooooooooo");
-        kafkaTemplate.send("productTopic", message);
+        kafkaProductTemplate.send("productTopic", message);
         log.info("Message is sent");
+    }
+
+    public void sendNotificationMessage(NotificationMessage message) {
+        kafkaNotificationTemplate.send("notificationTopic", message);
     }
 }
