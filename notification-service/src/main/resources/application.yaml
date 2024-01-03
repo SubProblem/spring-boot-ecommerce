@@ -1,0 +1,47 @@
+eureka:
+  instance:
+    preferIpAddress: false
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
+
+server:
+  port: 8095
+
+spring:
+  cloud:
+    discovery:
+      enabled: true
+  application:
+    name: notification-service
+  config:
+    import: optional:configserver:http://config-service:8888
+  main:
+    allow-circular-references: true
+
+
+  kafka:
+    consumer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAPSERVERS}
+      group-id: orderGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: com.subproblem.orderservice.producer.NotificationMessage:com.subproblem.notificationservice.consumer.NotificationMessage
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:  # Your Gmail
+    password:  # Your password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
