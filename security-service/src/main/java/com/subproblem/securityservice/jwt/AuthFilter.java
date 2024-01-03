@@ -33,7 +33,7 @@ public class AuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         LOGGER.info("AuthTokenFilter | parseJwt | headerAuth: {}", authHeader);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer: ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
