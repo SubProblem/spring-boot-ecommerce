@@ -114,6 +114,27 @@ services:
     restart: always
 
 
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "8095:8095"
+    networks:
+      - backend
+    depends_on:
+      - discovery-service
+      - config-service
+      - product-db
+      - broker
+      - zookeeper
+    environment:
+      - SPRING_KAFKA_BOOTSTRAPSERVERS=broker:29092
+
+    restart: always
+
+
   order-db:
     image: postgres
     container_name: order-db
