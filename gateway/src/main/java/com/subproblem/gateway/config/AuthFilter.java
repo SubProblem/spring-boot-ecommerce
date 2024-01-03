@@ -53,7 +53,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     .map(dto -> {
                         exchange.getRequest()
                                 .mutate()
-                                .header("auth-header-id", String.valueOf(dto.id()));
+                                .header("auth-header-id", String.valueOf(dto.id()))
+                                .header("user-email", dto.email());
                         return exchange;
                     }).flatMap(chain::filter);
 
